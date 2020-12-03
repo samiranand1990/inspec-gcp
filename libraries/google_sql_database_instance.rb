@@ -33,25 +33,7 @@ class SQLDatabaseInstance < GcpResourceBase
   desc 'DatabaseInstance'
   supports platform: 'gcp'
 
-  attr_reader :params
-  attr_reader :backend_type
-  attr_reader :connection_name
-  attr_reader :database_version
-  attr_reader :failover_replica
-  attr_reader :instance_type
-  attr_reader :ip_addresses
-  attr_reader :ipv6_address
-  attr_reader :master_instance_name
-  attr_reader :max_disk_size
-  attr_reader :name
-  attr_reader :region
-  attr_reader :replica_configuration
-  attr_reader :settings
-  attr_reader :gce_zone
-  attr_reader :state
-  attr_reader :disk_encryption_configuration
-  attr_reader :disk_encryption_status
-  attr_reader :server_ca_cert
+  attr_reader :params, :backend_type, :connection_name, :database_version, :failover_replica, :instance_type, :ip_addresses, :ipv6_address, :master_instance_name, :max_disk_size, :name, :region, :replica_configuration, :settings, :gce_zone, :state, :disk_encryption_configuration, :disk_encryption_status, :server_ca_cert
 
   def initialize(params)
     super(params.merge({ use_http_transport: true }))
@@ -103,6 +85,107 @@ class SQLDatabaseInstance < GcpResourceBase
   def primary_ip_address
     return '' if !@ip_addresses.size.zero? || @ip_addresses[0].ip_address.nil?
     @ip_addresses[0].ip_address
+  end
+
+  def has_log_checkpoints?
+    return true if !@database_version.to_s.include? 'POSTGRES_'
+    return true if @settings&.database_flags&.size.zero?
+    @settings.database_flags.each do |database_flag|
+      if database_flag.name.to_s.casecmp('log_checkpoints').zero?
+        if database_flag.value.to_s.casecmp('on').zero?
+          return true
+        else
+          return false
+        end
+      end
+    end
+    true
+  end
+
+  def has_log_connections?
+    return true if !@database_version.to_s.include? 'POSTGRES_'
+    return true if @settings&.database_flags.size.zero?
+    @settings.database_flags.each do |database_flag|
+      if database_flag.name.to_s.casecmp('log_connections').zero?
+        if database_flag.value.to_s.casecmp('on').zero?
+          return true
+        else
+          return false
+        end
+      end
+    end
+    true
+  end
+
+  def has_log_disconnections?
+    return true if !@database_version.to_s.include? 'POSTGRES_'
+    return true if @settings&.database_flags.size.zero?
+    @settings.database_flags.each do |database_flag|
+      if database_flag.name.to_s.casecmp('log_disconnections').zero?
+        if database_flag.value.to_s.casecmp('on').zero?
+          return true
+        else
+          return false
+        end
+      end
+    end
+    true
+  end
+
+  def has_log_lock_waits?
+    return true if !@database_version.to_s.include? 'POSTGRES_'
+    return true if @settings&.database_flags.size.zero?
+    @settings.database_flags.each do |database_flag|
+      if database_flag.name.to_s.casecmp('log_lock_waits').zero?
+        if database_flag.value.to_s.casecmp('on').zero?
+          return true
+        else
+          return false
+        end
+      end
+    end
+    true
+  end
+
+  def has_log_min_messages?
+    return true if !@database_version.to_s.include? 'POSTGRES_'
+    return true if @settings&.database_flags.size.zero?
+    @settings.database_flags.each do |database_flag|
+      if database_flag.name.to_s.casecmp('log_min_error_statement').zero?
+        return !database_flag.value.to_s.nil?
+      end
+    end
+  end
+
+  def has_log_temp_files?
+    return true if !@database_version.to_s.include? 'POSTGRES_'
+    return true if @settings&.database_flags.size.zero?
+    @settings.database_flags.each do |database_flag|
+      if database_flag.name.to_s.casecmp('log_temp_files').zero?
+        if database_flag.value.to_i.zero?
+          return true
+        else
+          return false
+        end
+      end
+    end
+    true
+  end
+
+
+  def has_log_min_duration_statement?
+    return true if !@database_version.to_s.include? 'POSTGRES_'
+    return true if @settings&.database_flags.size.zero?
+    @settings.database_flags.each do |database_flag|
+      if database_flag.name.to_s.casecmp('log_min_duration_statement').zero?
+        if database_flag.value.to_i==-1
+          return true
+        else
+          return false
+        end
+      end
+    end
+    true
   end
 
   private
