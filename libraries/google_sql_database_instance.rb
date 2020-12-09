@@ -152,7 +152,7 @@ class SQLDatabaseInstance < GcpResourceBase
     return true if @settings&.database_flags.size.zero?
     @settings.database_flags.each do |database_flag|
       if database_flag.name.to_s.casecmp('log_min_error_statement').zero?
-        return !database_flag.value.to_s.nil?
+        return !gdatabase_flag.value.to_s.nil?
       end
     end
   end

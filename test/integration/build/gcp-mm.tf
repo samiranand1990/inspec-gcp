@@ -574,7 +574,7 @@ resource "google_sourcerepo_repository" "gcp-inspec-sourcerepo-repository" {
 }
 
 resource "google_folder" "inspec-gcp-folder" {
-  count = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   display_name = var.folder["display_name"]
   parent       = "organizations/${var.gcp_organization_id}"
 }
@@ -620,7 +620,7 @@ resource "google_container_node_pool" "inspec-gcp-node-pool" {
 }
 
 resource "google_logging_organization_sink" "my-sink" {
-  count       = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count       = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   name        = var.org_sink.name
   org_id      = var.gcp_organization_id
 
@@ -636,7 +636,7 @@ variable "project_sink" {
 }
 
 resource "google_logging_project_sink" "project-logging-sink" {
-  count = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   project = var.gcp_project_id
 
   name = var.project_sink.name
@@ -669,7 +669,7 @@ resource "google_storage_bucket_object" "object" {
 }
 
 resource "google_app_engine_standard_app_version" "default" {
-  count = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   project         = var.gcp_project_id
   version_id      = var.standardappversion["version_id"]
   service         = var.standardappversion["service"]
@@ -767,7 +767,7 @@ resource "google_dataproc_cluster" "mycluster" {
 }
 
 resource "google_logging_folder_exclusion" "my-exclusion" {
-  count       = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count       = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   name        = var.folder_exclusion["name"]
   folder      = google_folder.inspec-gcp-folder.0.name
 
@@ -781,7 +781,7 @@ variable "project_exclusion" {
 }
 
 resource "google_logging_project_exclusion" "project-exclusion" {
-  count       = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count       = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   name        = var.project_exclusion["name"]
   project     = var.gcp_project_id
 
@@ -808,7 +808,7 @@ resource "google_filestore_instance" "instance" {
 }
 
 resource "google_logging_folder_sink" "folder-sink" {
-  count       = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count       = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   name        = var.folder_sink.name
   folder      = google_folder.inspec-gcp-folder.0.name
 
@@ -972,13 +972,13 @@ resource "google_access_context_manager_service_perimeter" "service-perimeter" {
 }
 
 resource "google_access_context_manager_access_policy" "access-policy" {
-  count  = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count  = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   parent = "organizations/${var.gcp_organization_id}"
   title  = var.service_perimeter["policy_title"]
 }
 
 resource "google_access_context_manager_access_level" "access-level" {
-  count  = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count  = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   parent = "accessPolicies/${google_access_context_manager_access_policy.access-policy.0.name}"
   name   = "accessPolicies/${google_access_context_manager_access_policy.access-policy.0.name}/accessLevels/os_lock"
   title  = "os_lock"
@@ -1189,7 +1189,7 @@ variable "gcp_dns_zone_name" {}
 resource "google_dns_managed_zone" "example-zone" {
   project     = var.gcp_project_id
   name        = var.dns_managed_zone["name"]
-  dns_name    = "${var.gcp_dns_zone_name}"
+  dns_name    = var.gcp_dns_zone_name
   description = var.dns_managed_zone["description"]
   dnssec_config {
     state = var.dns_managed_zone["dnssec_config_state"]
@@ -1236,7 +1236,7 @@ resource "google_compute_image" "example" {
 variable "gcp_organization_iam_custom_role_id" {}
 
 resource "google_organization_iam_custom_role" "generic_org_iam_custom_role" {
-  count       = "${var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources}"
+  count       = var.gcp_organization_id == "" ? 0 : var.gcp_enable_privileged_resources
   org_id      = var.gcp_organization_id
   role_id     = var.gcp_organization_iam_custom_role_id
   title       = "GCP Inspec Generic Organization IAM Custom Role"

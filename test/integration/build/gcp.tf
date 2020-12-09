@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 0.12.0"
+  required_version = "~> 0.13.5"
 }
 
 # GCP Terraform Templates For Inspec Testing
@@ -91,20 +91,25 @@ variable "gcp_vpn_address_name" {}
 variable "gcp_db_instance_name" {}
 variable "gcp_db_name" {}
 variable "gcp_db_type" {}
+
 variable "gcp_db_size" {}
 variable "gcp_db_user_name" {}
 variable "gcp_db_user_password" {}
 
 variable "gcp_enable_privileged_resources" {}
 
+variable "gcp_postgresql_db_instance_name" {}
+variable "gcp_postgre_db_type" {}
+variable "gcp_postgre_db_size" {}
+
 provider "google" {
   region = var.gcp_location
-  version = "~> 3.26.0"
+  version = "3.49.0"
 }
 
 provider "google-beta" {
   region = var.gcp_location
-  version = "~> 3.26.0"
+  version = "3.49.0"
 }
 
 resource "google_service_account" "generic_service_account_object_viewer" {
@@ -819,6 +824,20 @@ resource "google_sql_database_instance" "cloud-sql-db-instance" {
     # Second-generation instance tiers are based on the machine
     # type. See argument reference below.
     tier = var.gcp_db_size
+  }
+}
+
+
+resource "google_sql_database_instance" "cloud-postgresql-db-instance" {
+  project          = var.gcp_project_id
+  name             = var.gcp_postgresql_db_instance_name
+  database_version = var.gcp_postgre_db_type
+  region           = var.gcp_location
+
+  settings {
+    # Second-generation instance tiers are based on the machine
+    # type. See argument reference below.
+    tier = var.gcp_postgre_db_size
   }
 }
 

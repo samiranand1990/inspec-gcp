@@ -21,13 +21,13 @@ module GCPInspecConfig
       end
       @config = {
         # Generic GCP resource parameters
-        :gcp_organization_id => '953310715741',
-        :gcp_project_name => "SPaterson Project",
-        :gcp_project_id => "spaterson-project",
-        :gcp_project_number => "1041358276233",
+        :gcp_organization_id => '827482578277',
+        :gcp_project_name => "ppradhan",
+        :gcp_project_id => "ppradhan",
+        :gcp_project_number => "165434197229",
         # Determine the storage account name and the admin password
         :gcp_location => "europe-west2",
-        :gcp_zone => "europe-west2-a",
+        :gcp_zone => "europe-west2",
         # Cloud functions are only available in certain regions
         :gcp_cloud_function_region => "us-central1",
         :gcp_int_vm_name => "gcp-inspec-int-linux-vm",
@@ -96,6 +96,9 @@ module GCPInspecConfig
         :gcp_address_name => "gcp-inspec-address",
         :gcp_vpn_address_name => "gcp-inspec-vpn-address",
         :gcp_db_instance_name => "gcp-inspec-db-#{add_random_string}",
+        :gcp_postgresql_db_instance_name => "gcp-inspec-postgre-db-#{add_random_string}",
+        :gcp_postgre_db_type => "POSTGRES_11",
+        :gcp_postgre_db_size => "db-f1-micro",
         :gcp_db_name => "inspecgcp",
         :gcp_db_type => "MYSQL_5_7",
         :gcp_db_size => "db-f1-micro",
@@ -108,7 +111,7 @@ module GCPInspecConfig
         # be disabled meaning a user needs no special GCP privileges to run the integration test pack.
         #
         # Note, would prefer to use boolean true or false here but will revisit for a future version of tf, see here for more detail: https://www.terraform.io/docs/configuration/variables.html
-        :gcp_enable_privileged_resources => 1,
+        :gcp_enable_privileged_resources => 0,
         # Some controls make use of the gcloud command and grep to discover live data to then test against.
         # Only test execution is affected by this flag, resource creation via terraform is unaffected.
         # Default behaviour is for this to be disabled, enable by changing the below flag.
